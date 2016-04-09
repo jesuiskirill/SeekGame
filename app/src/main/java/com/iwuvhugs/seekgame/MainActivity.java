@@ -125,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void callCloudVision(final Bitmap bitmap) throws IOException {
         // Switch text to loading
-        if (gameFragment != null) {
-            gameFragment.setImageDetailsText("Wait until photo is recognizing");
-        }
+//        if (gameFragment != null) {
+//            gameFragment.setImageDetailsText("Wait until photo is recognizing");
+//        }
         if(photoFragment != null){
             photoFragment.deactivateWhileProcessingImage();
         }
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
             protected void onPostExecute(String result) {
                 if (gameFragment != null) {
-                    gameFragment.setImageDetailsText(result);
+                    gameFragment.sendObjectsFound(result);
                 }
 
                 if(photoFragment != null){

@@ -2,20 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp">
 
-    <TextView
-        android:id="@+id/image_details"
+
+    <GridView
+        android:id="@+id/game_items_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Use the floating action button to select an image." />
+        android:gravity="center"
+        android:horizontalSpacing="8dp"
+        android:numColumns="2"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="8dp">
+
+    </GridView>
 
     <!--<ImageView-->
-        <!--android:id="@+id/main_image"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:scaleType="fitCenter" />-->
+    <!--android:id="@+id/main_image"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="100dp"-->
+    <!--android:scaleType="fitCenter" />-->
 
 
 </LinearLayout>

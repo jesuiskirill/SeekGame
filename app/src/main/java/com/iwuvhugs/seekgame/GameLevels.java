@@ -12,7 +12,7 @@ public class GameLevels {
 
     public GameLevels() {
 
-        String[] gameObjects1 = {"phone", "laptop", "car", "headphones"};
+        String[] gameObjects1 = {"Phone", "Laptop", "Car", "Headphones"};
         GameObjects game1 = new GameObjects(gameObjects1);
 
         games.add(game1);
