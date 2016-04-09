@@ -25,6 +25,8 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -37,13 +39,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     /**
-     *
      * Register for free access to Cloud API here
      * https://cloud.google.com/vision/
      * Also create CloudVisionCredentials.java and add
      * public static final String CLOUD_VISION_API_KEY = "<your API key>"
      * inside that class.
-     *
      */
     private static final String CLOUD_VISION_API_KEY = CloudVisionCredentials.CLOUD_VISION_API_KEY;
 
@@ -60,30 +60,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        if (null == savedInstanceState) {
 
-            gameFragment = GameFragment.newInstance();
-            photoFragment = PhotoFragment.newInstance();
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.game_fragment, gameFragment)
-                    .commit();
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, photoFragment)
-                    .commit();
+        gameFragment = GameFragment.newInstance();
+        photoFragment = PhotoFragment.newInstance();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.game_fragment, gameFragment)
+                .commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, photoFragment)
+                .commit();
 
-
-//        }
 
         photoReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e(TAG, "Hey, It's Kirill again from Game Fragment");
-//                Toast.makeText(getActivity(), "PHOTO CAPURED", Toast.LENGTH_LONG).show();
                 uploadImage();
             }
         };
-
         registerReceiver(photoReceiver, intFilt);
+
+
+        GameLevels levels = new GameLevels();
+        GameObjects objects = levels.getGame(0);
+        gameFragment.setGame(objects);
     }
 
     @Override
@@ -101,34 +100,36 @@ public class MainActivity extends AppCompatActivity {
     private void uploadImage() {
         Uri uri = Uri.fromFile(new File(this.getExternalFilesDir(null), "pic.jpg"));
 
-            if (uri != null) {
-                try {
-                    // scale the image to 800px to save on bandwidth
-                    Bitmap bitmap = Utils.scaleBitmapDown(MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri), 1200);
+        if (uri != null) {
+            try {
+                // scale the image to 800px to save on bandwidth
+                Bitmap bitmap = Utils.scaleBitmapDown(MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri), 1200);
 
-                    callCloudVision(bitmap);
-                    if(gameFragment != null) {
-                        gameFragment.setImageBitmap(bitmap);
-                    }
-
-                } catch (IOException e) {
-                    Log.d(TAG, "Image picking failed because " + e.getMessage());
-//                    Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
+                callCloudVision(bitmap);
+//                if (gameFragment != null) {
+//                    gameFragment.setImageBitmap(bitmap);
+//                }
+                if (photoFragment != null) {
+                    photoFragment.showTakenPhoto(bitmap);
                 }
-            } else {
-                Log.d(TAG, "Image picker gave us a null image.");
-//                Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
+
+            } catch (IOException e) {
+                Log.d(TAG, "Image picking failed because " + e.getMessage());
             }
+        } else {
+            Log.d(TAG, "Image picker gave us a null image.");
+        }
 
     }
 
 
     private void callCloudVision(final Bitmap bitmap) throws IOException {
         // Switch text to loading
-        //TODO
-//        mImageDetails.setText("Wait until photo is recognizing");
-        if(gameFragment != null) {
+        if (gameFragment != null) {
             gameFragment.setImageDetailsText("Wait until photo is recognizing");
+        }
+        if(photoFragment != null){
+            photoFragment.deactivateWhileProcessingImage();
         }
 
 
@@ -193,47 +194,35 @@ public class MainActivity extends AppCompatActivity {
             }
 
             protected void onPostExecute(String result) {
-                if(gameFragment != null) {
+                if (gameFragment != null) {
                     gameFragment.setImageDetailsText(result);
+                }
+
+                if(photoFragment != null){
+                    photoFragment.activateAfterProcessingImage();
                 }
             }
         }.execute();
     }
 
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
+
         String message = "I found these things:\n\n";
+        JsonArray json = new JsonArray();
 
         List<EntityAnnotation> labels = response.getResponses().get(0).getLabelAnnotations();
         if (labels != null) {
             for (EntityAnnotation label : labels) {
                 message += String.format("%.3f: %s", label.getScore(), label.getDescription());
                 message += "\n";
+                JsonPrimitive element = new JsonPrimitive(label.getDescription());
+                json.add(element);
             }
         } else {
             message += "nothing";
         }
-
-        return message;
+        Log.e(TAG, message);
+        return json.toString();
     }
 
-
-//    public void uploadImage(Uri uri) {
-//        if (uri != null) {
-//            try {
-//                // scale the image to 800px to save on bandwidth
-//                Bitmap bitmap = Utils.scaleBitmapDown(MediaStore.Images.Media.getBitmap(getContentResolver(), uri), 1200);
-//
-//                callCloudVision(bitmap);
-//                //TODO
-////                mMainImage.setImageBitmap(bitmap);
-//
-//            } catch (IOException e) {
-//                Log.d(TAG, "Image picking failed because " + e.getMessage());
-////                Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
-//            }
-//        } else {
-//            Log.d(TAG, "Image picker gave us a null image.");
-////            Toast.makeText(this, R.string.image_picker_error, Toast.LENGTH_LONG).show();
-//        }
-//    }
 }

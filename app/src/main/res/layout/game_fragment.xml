@@ -11,11 +11,11 @@
         android:layout_marginBottom="8dp"
         android:text="Use the floating action button to select an image." />
 
-    <ImageView
-        android:id="@+id/main_image"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:scaleType="fitCenter" />
+    <!--<ImageView-->
+        <!--android:id="@+id/main_image"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:scaleType="fitCenter" />-->
 
 
 </LinearLayout>
