@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">SeekGame</string>
+
+
+    <string name="manual">
+        Welcome to the Seek Game\n
+        \n
+        How to play:\n
+        1) Start game\n
+        2) See objects you need to find\n
+        3) Use camera to take pictures of objects\n
+        4) If Google recognizes them you get a score\n
+        5) Find all to win\n
+        \n
+        Have fun!\n
+    </string>
 </resources>

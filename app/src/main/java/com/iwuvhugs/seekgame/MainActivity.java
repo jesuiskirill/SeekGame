@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -48,12 +49,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String CLOUD_VISION_API_KEY = CloudVisionCredentials.CLOUD_VISION_API_KEY;
 
     public static final String PHOTO_READY = "com.iwuvhugs.seekgame.PHOTO_READY";
+    public static final String GAME_WON = "com.iwuvhugs.seekgame.GAME_WON";
 
     private PhotoFragment photoFragment = null;
     private GameFragment gameFragment = null;
 
     private BroadcastReceiver photoReceiver;
-    private IntentFilter intFilt = new IntentFilter(PHOTO_READY);
+    private IntentFilter intentFilter = new IntentFilter();
 
 
     @Override
@@ -74,15 +76,28 @@ public class MainActivity extends AppCompatActivity {
         photoReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                uploadImage();
+                switch (intent.getAction()) {
+                    case PHOTO_READY:
+                        uploadImage();
+                        break;
+                    case GAME_WON:
+                        Log.i(TAG, "GAME WON. HOOORAY");
+                        if (getSupportActionBar() != null) {
+                            getSupportActionBar().setTitle("GAME WON. HOOORAY");
+                            getSupportActionBar().setSubtitle("Go back to play again");
+                            getSupportActionBar().setHomeButtonEnabled(true);
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                        }
+                        break;
+                }
+
             }
         };
-        registerReceiver(photoReceiver, intFilt);
+        intentFilter.addAction(PHOTO_READY);
+        intentFilter.addAction(GAME_WON);
+        registerReceiver(photoReceiver, intentFilter);
 
 
-        GameLevels levels = new GameLevels();
-        GameObjects objects = levels.getGame(0);
-        gameFragment.setGame(objects);
     }
 
     @Override
@@ -94,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(photoReceiver, intFilt);
+        registerReceiver(photoReceiver, intentFilter);
     }
 
     private void uploadImage() {
@@ -124,11 +139,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void callCloudVision(final Bitmap bitmap) throws IOException {
-        // Switch text to loading
-//        if (gameFragment != null) {
-//            gameFragment.setImageDetailsText("Wait until photo is recognizing");
-//        }
-        if(photoFragment != null){
+
+        if (photoFragment != null) {
             photoFragment.deactivateWhileProcessingImage();
         }
 
@@ -198,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                     gameFragment.sendObjectsFound(result);
                 }
 
-                if(photoFragment != null){
+                if (photoFragment != null) {
                     photoFragment.activateAfterProcessingImage();
                 }
             }
@@ -221,8 +233,17 @@ public class MainActivity extends AppCompatActivity {
         } else {
             message += "nothing";
         }
-        Log.e(TAG, message);
+        Log.i(TAG, message);
         return json.toString();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

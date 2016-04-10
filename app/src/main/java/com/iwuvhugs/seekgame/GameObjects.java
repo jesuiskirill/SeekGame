@@ -1,30 +1,51 @@
 package com.iwuvhugs.seekgame;
 
-/**
- * Created by iwuvhugs on 2016-04-09.
- */
+import java.util.ArrayList;
+
+
 public class GameObjects {
 
+    private int currentScore = 0;
+    private int scoresToWin = 0;
+    private ArrayList<GameObject> list = new ArrayList<>();
 
-    private String[] objects;
-    private Boolean[] isObjectsFound;
-
-    public GameObjects(String[] objects) {
-        this.objects = new String[objects.length];
-        this.isObjectsFound = new Boolean[objects.length];
-        System.arraycopy(objects, 0, this.objects, 0, this.objects.length);
+    public GameObjects() {
     }
 
-    public String[] getObjects() {
-        return objects;
+    public GameObjects(ArrayList<GameObject> list) {
+        this.list = list;
     }
 
-    public String getObjectArPosition(int position) {
-        return objects[position];
-
+    public ArrayList<GameObject> getList() {
+        return list;
     }
 
-//    public void setObjects(String[] objects) {
-//        this.objects = objects;
-//    }
+    public void setList(ArrayList<GameObject> list) {
+        this.list = list;
+    }
+
+    public GameObject getGameObjectAtPosition(int position) {
+        return list.get(position);
+    }
+
+    public int getSize() {
+        return list.size();
+    }
+
+    public void add(GameObject go) {
+        list.add(go);
+        scoresToWin++;
+    }
+
+    public int getCurrentScore() {
+        return currentScore;
+    }
+
+    public void score() {
+        currentScore++;
+    }
+
+    public Boolean win() {
+        return currentScore == scoresToWin;
+    }
 }

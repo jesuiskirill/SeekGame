@@ -365,10 +365,6 @@ public class PhotoFragment extends Fragment
         return view;
     }
 
-//    @Override
-//    public void onViewCreated(final View view, Bundle savedInstanceState) {
-//
-//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

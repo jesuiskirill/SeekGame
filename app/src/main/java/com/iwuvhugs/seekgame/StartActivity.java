@@ -17,9 +17,9 @@ public class StartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start);
 
         startGameButton = (Button) findViewById(R.id.start_game_button);
-        showResultsButton = (Button) findViewById(R.id.show_stats_button);
+//        showResultsButton = (Button) findViewById(R.id.show_stats_button);
         startGameButton.setOnClickListener(buttonsListener);
-        showResultsButton.setOnClickListener(buttonsListener);
+//        showResultsButton.setOnClickListener(buttonsListener);
     }
 
     private View.OnClickListener buttonsListener = new View.OnClickListener() {
@@ -29,8 +29,8 @@ public class StartActivity extends AppCompatActivity {
                 case R.id.start_game_button:
                     startActivity(new Intent(StartActivity.this, MainActivity.class));
                     break;
-                case R.id.show_stats_button:
-                    break;
+//                case R.id.show_stats_button:
+//                    break;
 //                case
             }
 

@@ -17,17 +17,25 @@
         android:orientation="vertical"
         android:padding="32dp">
 
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/manual"
+             />
+
         <Button
             android:id="@+id/start_game_button"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:text="Start game" />
 
-        <Button
-            android:id="@+id/show_stats_button"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginTop="16dp"
-            android:text="Results" />
+        <!--<Button-->
+        <!--android:id="@+id/show_stats_button"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="Results" />-->
     </LinearLayout>
 </RelativeLayout>

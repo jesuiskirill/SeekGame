@@ -1,7 +1,6 @@
 package com.iwuvhugs.seekgame;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,18 +20,16 @@ public class GameObjectsAdapter extends BaseAdapter {
     public GameObjectsAdapter(Context context, GameObjects objects) {
         this.context = context;
         this.objects = objects;
-        Log.e(TAG, objects.toString());
-//        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return objects.getObjects().length;
+        return objects.getSize();
     }
 
     @Override
     public Object getItem(int position) {
-        return objects.getObjectArPosition(position);
+        return objects.getGameObjectAtPosition(position);
     }
 
     @Override
@@ -43,7 +40,7 @@ public class GameObjectsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ViewHolder holder = null;
+        ViewHolder holder;
 
         if (convertView == null) {
 
@@ -60,13 +57,16 @@ public class GameObjectsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.textView.setText(objects.getObjectArPosition(position));
+        holder.textView.setText(objects.getGameObjectAtPosition(position).getObject());
+        holder.checkBox.setChecked(objects.getGameObjectAtPosition(position).getFound());
 
         return convertView;
     }
 
-    public void nthItemFound(int i) {
 
+    public void setNewUpdatedGameObjects(GameObjects objects) {
+        this.objects = objects;
+        notifyDataSetChanged();
     }
 
     class ViewHolder {
